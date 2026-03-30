@@ -1,4 +1,4 @@
-package graduation.pet.service;
+package graduation.pet.service.service;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
