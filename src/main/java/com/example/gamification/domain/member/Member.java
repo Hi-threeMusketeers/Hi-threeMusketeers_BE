@@ -56,4 +56,14 @@ public class Member {
 
     @OneToMany(mappedBy = "member")
     private List<QrLog> qrLogs;
+
+    public static Member create(String loginId, String password, String nickname) {
+        Member member = new Member();
+        member.loginId = loginId;
+        member.password = password;
+        member.nickname = nickname;
+        member.createdAt = LocalDateTime.now();
+        member.updatedAt = LocalDateTime.now();
+        return member;
+    }
 }
