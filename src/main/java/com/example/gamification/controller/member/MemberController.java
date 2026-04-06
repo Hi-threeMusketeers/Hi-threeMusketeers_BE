@@ -1,5 +1,7 @@
 package com.example.gamification.controller.member;
 
+import com.example.gamification.dto.member.LoginRequest;
+import com.example.gamification.dto.member.LoginResponse;
 import com.example.gamification.dto.member.SignUpRequest;
 import com.example.gamification.dto.member.SignUpResponse;
 import com.example.gamification.service.member.MemberService;
@@ -19,5 +21,10 @@ public class MemberController {
     @ResponseStatus(HttpStatus.CREATED)
     public SignUpResponse signUp(@Valid @RequestBody SignUpRequest request) {
         return memberService.signUp(request);
+    }
+
+    @PostMapping("/login")
+    public LoginResponse login(@Valid @RequestBody LoginRequest request) {
+        return memberService.login(request);
     }
 }
