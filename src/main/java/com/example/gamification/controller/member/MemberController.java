@@ -9,6 +9,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.Authentication;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -26,5 +28,9 @@ public class MemberController {
     @PostMapping("/login")
     public LoginResponse login(@Valid @RequestBody LoginRequest request) {
         return memberService.login(request);
+    }
+    @GetMapping("/me")
+    public String me(Authentication authentication) {
+        return "현재 로그인한 아이디: " + authentication.getName();
     }
 }

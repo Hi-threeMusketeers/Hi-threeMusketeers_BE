@@ -6,10 +6,11 @@ import com.example.gamification.dto.member.LoginRequest;
 import com.example.gamification.dto.member.LoginResponse;
 import com.example.gamification.dto.member.SignUpRequest;
 import com.example.gamification.dto.member.SignUpResponse;
+import com.example.gamification.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Service
 @RequiredArgsConstructor
@@ -18,6 +19,7 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public SignUpResponse signUp(SignUpRequest request) {
         if (memberRepository.existsByLoginId(request.getLoginId())) {
@@ -30,9 +32,14 @@ public class MemberService {
                 request.getNickname()
         );
 
-        memberRepository.save(member);
+        Member savedMember = memberRepository.save(member);
 
-        return new SignUpResponse("회원가입이 완료되었습니다.");
+        return new SignUpResponse(
+                savedMember.getMemberId(),
+                savedMember.getLoginId(),
+                savedMember.getNickname(),
+                "회원가입이 완료되었습니다."
+        );
     }
 
     public LoginResponse login(LoginRequest request) {
@@ -43,8 +50,14 @@ public class MemberService {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 
+        String accessToken = jwtTokenProvider.createToken(member.getLoginId());
+
         return new LoginResponse(
-                "로그인 성공"
+                member.getMemberId(),
+                member.getLoginId(),
+                member.getNickname(),
+                "로그인 성공",
+                accessToken
         );
     }
 }
