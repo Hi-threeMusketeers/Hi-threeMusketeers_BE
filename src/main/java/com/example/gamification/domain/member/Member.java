@@ -33,8 +33,8 @@ public class Member {
     @Column(name = "last_attendance_date")
     private LocalDate lastAttendanceDate;
 
-    @Column(name = "nickname", nullable = false, length = 20)
-    private String nickname;
+    @Column(name = "pet_nickname", nullable = false, length = 20)
+    private String petNickname;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
@@ -57,11 +57,11 @@ public class Member {
     @OneToMany(mappedBy = "member")
     private List<QrLog> qrLogs;
 
-    public static Member create(String loginId, String password, String nickname) {
+    public static Member create(String loginId, String password, String petNickname) {
         Member member = new Member();
         member.loginId = loginId;
         member.password = password;
-        member.nickname = nickname;
+        member.petNickname = petNickname;
         member.createdAt = LocalDateTime.now();
         member.updatedAt = LocalDateTime.now();
         return member;

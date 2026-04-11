@@ -2,6 +2,7 @@ package com.example.gamification.service.member;
 
 import com.example.gamification.domain.member.Member;
 import com.example.gamification.domain.member.MemberRepository;
+import com.example.gamification.dto.member.CheckLoginIdResponse;
 import com.example.gamification.dto.member.LoginRequest;
 import com.example.gamification.dto.member.LoginResponse;
 import com.example.gamification.dto.member.SignUpRequest;
@@ -21,6 +22,16 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
 
+    public CheckLoginIdResponse checkLoginId(String loginId) {
+        boolean exists = memberRepository.existsByLoginId(loginId);
+
+        if (exists) {
+            return new CheckLoginIdResponse(false, "이미 존재하는 아이디입니다.");
+        }
+
+        return new CheckLoginIdResponse(true, "사용 가능한 아이디입니다.");
+    }
+
     public SignUpResponse signUp(SignUpRequest request) {
         if (memberRepository.existsByLoginId(request.getLoginId())) {
             throw new IllegalArgumentException("이미 존재하는 아이디입니다.");
@@ -29,16 +40,19 @@ public class MemberService {
         Member member = Member.create(
                 request.getLoginId(),
                 passwordEncoder.encode(request.getPassword()),
-                request.getNickname()
+                request.getPetNickname()
         );
 
         Member savedMember = memberRepository.save(member);
 
+        String accessToken = jwtTokenProvider.createToken(savedMember.getLoginId());
+
         return new SignUpResponse(
                 savedMember.getMemberId(),
                 savedMember.getLoginId(),
-                savedMember.getNickname(),
-                "회원가입이 완료되었습니다."
+                savedMember.getPetNickname(),
+                "회원가입이 완료되었습니다.",
+                accessToken
         );
     }
 
@@ -55,7 +69,7 @@ public class MemberService {
         return new LoginResponse(
                 member.getMemberId(),
                 member.getLoginId(),
-                member.getNickname(),
+                member.getPetNickname(),
                 "로그인 성공",
                 accessToken
         );

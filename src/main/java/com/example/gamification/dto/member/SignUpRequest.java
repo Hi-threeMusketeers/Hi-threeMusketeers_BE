@@ -17,7 +17,7 @@ public class SignUpRequest {
     @Size(max = 255, message = "비밀번호는 255자 이하여야 합니다.")
     private String password;
 
-    @NotBlank(message = "닉네임은 필수입니다.")
-    @Size(max = 20, message = "닉네임은 20자 이하여야 합니다.")
-    private String nickname;
+    @NotBlank(message = "펫 이름은 필수입니다.")
+    @Size(max = 10, message = "펫 이름은 10자 이하여야 합니다.")
+    private String petNickname;
 }
