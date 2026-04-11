@@ -8,7 +8,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
+import com.example.gamification.dto.course.MyCourseResponse;
 import java.util.List;
 
 @RestController
@@ -29,5 +29,9 @@ public class CourseController {
             @Valid @RequestBody SaveUserCoursesRequest request
     ) {
         return courseService.saveUserCourses(authentication.getName(), request);
+    }
+    @GetMapping("/me")
+    public List<MyCourseResponse> getMyCourses(Authentication authentication) {
+        return courseService.getMyCourses(authentication.getName());
     }
 }

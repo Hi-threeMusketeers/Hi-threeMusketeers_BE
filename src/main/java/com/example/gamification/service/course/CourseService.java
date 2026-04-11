@@ -13,6 +13,7 @@ import com.example.gamification.dto.course.SaveUserCoursesResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.example.gamification.dto.course.MyCourseResponse;
 
 import java.util.Comparator;
 import java.util.List;
@@ -82,5 +83,40 @@ public class CourseService {
         }
 
         return new SaveUserCoursesResponse(savedCount, "시간표 저장이 완료되었습니다.");
+    }
+    public List<MyCourseResponse> getMyCourses(String loginId) {
+        Member member = memberRepository.findByLoginId(loginId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+
+        List<UserCourse> userCourses = userCourseRepository.findByMember(member);
+
+        return userCourses.stream()
+                .map(UserCourse::getCourse)
+                .distinct()
+                .map(course -> {
+                    List<CourseSchedule> schedules = course.getCourseSchedules().stream()
+                            .sorted(Comparator.comparing(CourseSchedule::getDayOfWeek)
+                                    .thenComparing(CourseSchedule::getStartTime))
+                            .toList();
+
+                    String classroomText = schedules.stream()
+                            .map(CourseSchedule::getClassroom)
+                            .distinct()
+                            .collect(Collectors.joining(", "));
+
+                    String scheduleText = schedules.stream()
+                            .map(schedule -> schedule.getDayOfWeek() + " "
+                                    + schedule.getStartTime() + "-" + schedule.getEndTime())
+                            .collect(Collectors.joining(", "));
+
+                    return new MyCourseResponse(
+                            course.getCourseId(),
+                            course.getCourseName(),
+                            course.getProfessorName(),
+                            classroomText,
+                            scheduleText
+                    );
+                })
+                .toList();
     }
 }
