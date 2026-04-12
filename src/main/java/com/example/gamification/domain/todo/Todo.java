@@ -40,4 +40,19 @@ public class Todo {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
+
+    public Todo(Member member, LocalDate todoDate, String title, String content) {
+        this.member = member;
+        this.todoDate = todoDate;
+        this.title = title;
+        this.content = content;
+        this.isCompleted = false;
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public void complete() {
+        this.isCompleted = true;
+        this.updatedAt = LocalDateTime.now();
+    }
 }
