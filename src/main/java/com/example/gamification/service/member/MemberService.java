@@ -1,7 +1,6 @@
 package com.example.gamification.service.member;
 
 import com.example.gamification.domain.member.Member;
-import com.example.gamification.domain.member.MemberRepository;
 import com.example.gamification.dto.member.LoginRequest;
 import com.example.gamification.dto.member.LoginResponse;
 import com.example.gamification.dto.member.SignUpRequest;
