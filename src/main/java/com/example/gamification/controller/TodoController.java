@@ -29,7 +29,7 @@ public class TodoController {
         return "투두가 삭제되었습니다.";
     }
 
-    @PatchMapping("/{todoId}/complete")
+    @PatchMapping("/{todoId}/toggle")
     public TodoResponse completeTodo(@PathVariable Long todoId, Authentication authentication) {
         String loginId = authentication.getName();
         return todoService.completeTodo(loginId, todoId);

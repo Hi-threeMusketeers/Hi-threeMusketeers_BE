@@ -54,7 +54,7 @@ public class TodoService {
         Todo todo = todoRepository.findByTodoIdAndMember_LoginId(todoId, loginId)
                 .orElseThrow(() -> new EntityNotFoundException("해당 투두가 존재하지 않거나 권한이 없습니다."));
 
-        todo.complete();
+        todo.toggleComplete();
 
         Todo updatedTodo = todoRepository.save(todo);
 

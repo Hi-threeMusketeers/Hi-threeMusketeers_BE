@@ -51,8 +51,8 @@ public class Todo {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public void complete() {
-        this.isCompleted = true;
+    public void toggleComplete() {
+        this.isCompleted = !this.isCompleted;
         this.updatedAt = LocalDateTime.now();
     }
 }
