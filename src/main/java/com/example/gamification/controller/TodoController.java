@@ -3,10 +3,11 @@ package com.example.gamification.controller;
 import com.example.gamification.dto.todo.TodoCreateRequest;
 import com.example.gamification.dto.todo.TodoResponse;
 import com.example.gamification.service.TodoService;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/todos")
+@RequestMapping("/api/todos")
 public class TodoController {
 
     private final TodoService todoService;
@@ -15,22 +16,22 @@ public class TodoController {
         this.todoService = todoService;
     }
 
-    //투두 저장
     @PostMapping
-    public TodoResponse createTodo(@RequestBody TodoCreateRequest request) {
-        return todoService.createTodo(request);
+    public TodoResponse createTodo(@RequestBody TodoCreateRequest request, Authentication authentication) {
+        String loginId = authentication.getName();
+        return todoService.createTodo(loginId, request);
     }
 
-    //투두 삭제
     @DeleteMapping("/{todoId}")
-    public String deleteTodo(@PathVariable Long todoId) {
-        todoService.deleteTodo(todoId);
+    public String deleteTodo(@PathVariable Long todoId, Authentication authentication) {
+        String loginId = authentication.getName();
+        todoService.deleteTodo(loginId, todoId);
         return "투두가 삭제되었습니다.";
     }
 
-    //투두 완료 처리
     @PatchMapping("/{todoId}/complete")
-    public TodoResponse completeTodo(@PathVariable Long todoId) {
-        return todoService.completeTodo(todoId);
+    public TodoResponse completeTodo(@PathVariable Long todoId, Authentication authentication) {
+        String loginId = authentication.getName();
+        return todoService.completeTodo(loginId, todoId);
     }
 }

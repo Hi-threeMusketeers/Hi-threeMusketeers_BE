@@ -5,15 +5,13 @@ import java.time.LocalDate;
 public class TodoResponse {
 
     private Long todoId;
-    private Long memberId;
     private LocalDate todoDate;
     private String title;
     private String content;
     private Boolean isCompleted;
 
-    public TodoResponse(Long todoId, Long memberId, LocalDate todoDate, String title, String content, Boolean isCompleted) {
+    public TodoResponse(Long todoId, LocalDate todoDate, String title, String content, Boolean isCompleted) {
         this.todoId = todoId;
-        this.memberId = memberId;
         this.todoDate = todoDate;
         this.title = title;
         this.content = content;
@@ -22,10 +20,6 @@ public class TodoResponse {
 
     public Long getTodoId() {
         return todoId;
-    }
-
-    public Long getMemberId() {
-        return memberId;
     }
 
     public LocalDate getTodoDate() {

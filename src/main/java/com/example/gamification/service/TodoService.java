@@ -11,11 +11,13 @@ import com.example.gamification.repository.MemberRepository;
 import com.example.gamification.repository.TodoRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Service
+@Transactional
 public class TodoService {
 
     private final TodoRepository todoRepository;
@@ -26,9 +28,8 @@ public class TodoService {
         this.memberRepository = memberRepository;
     }
 
-    // 투두 생성
-    public TodoResponse createTodo(TodoCreateRequest request) {
-        Member member = memberRepository.findById(request.getMemberId())
+    public TodoResponse createTodo(String loginId, TodoCreateRequest request) {
+        Member member = memberRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new EntityNotFoundException("해당 회원이 존재하지 않습니다."));
 
         Todo todo = new Todo(
@@ -42,7 +43,6 @@ public class TodoService {
 
         return new TodoResponse(
                 savedTodo.getTodoId(),
-                savedTodo.getMember().getMemberId(),
                 savedTodo.getTodoDate(),
                 savedTodo.getTitle(),
                 savedTodo.getContent(),
@@ -50,10 +50,9 @@ public class TodoService {
         );
     }
 
-    // 투두 완료 처리
-    public TodoResponse completeTodo(Long todoId) {
-        Todo todo = todoRepository.findById(todoId)
-                .orElseThrow(() -> new EntityNotFoundException("해당 투두가 존재하지 않습니다."));
+    public TodoResponse completeTodo(String loginId, Long todoId) {
+        Todo todo = todoRepository.findByTodoIdAndMember_LoginId(todoId, loginId)
+                .orElseThrow(() -> new EntityNotFoundException("해당 투두가 존재하지 않거나 권한이 없습니다."));
 
         todo.complete();
 
@@ -61,7 +60,6 @@ public class TodoService {
 
         return new TodoResponse(
                 updatedTodo.getTodoId(),
-                updatedTodo.getMember().getMemberId(),
                 updatedTodo.getTodoDate(),
                 updatedTodo.getTitle(),
                 updatedTodo.getContent(),
@@ -69,17 +67,15 @@ public class TodoService {
         );
     }
 
-    // 투두 삭제
-    public void deleteTodo(Long todoId) {
-        Todo todo = todoRepository.findById(todoId)
-                .orElseThrow(() -> new EntityNotFoundException("해당 투두가 존재하지 않습니다."));
+    public void deleteTodo(String loginId, Long todoId) {
+        Todo todo = todoRepository.findByTodoIdAndMember_LoginId(todoId, loginId)
+                .orElseThrow(() -> new EntityNotFoundException("해당 투두가 존재하지 않거나 권한이 없습니다."));
 
         todoRepository.delete(todo);
     }
 
-    // 특정 날짜의 투두 조회
-    public CalendarDateResponse getTodosByDate(Long memberId, LocalDate date) {
-        List<Todo> todos = todoRepository.findByMember_MemberIdAndTodoDate(memberId, date);
+    public CalendarDateResponse getTodosByDate(String loginId, LocalDate date) {
+        List<Todo> todos = todoRepository.findByMember_LoginIdAndTodoDate(loginId, date);
 
         List<CalendarTodoResponse> todoResponses = todos.stream()
                 .map(todo -> new CalendarTodoResponse(
@@ -93,12 +89,11 @@ public class TodoService {
         return new CalendarDateResponse(date, todoResponses);
     }
 
-    // 특정 월의 투두가 있는 날짜만 조회
-    public CalendarMonthResponse getMonthlyTodoStatus(Long memberId, int year, int month) {
+    public CalendarMonthResponse getMonthlyTodoStatus(String loginId, int year, int month) {
         LocalDate startDate = LocalDate.of(year, month, 1);
         LocalDate endDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
 
-        List<Todo> todos = todoRepository.findByMember_MemberIdAndTodoDateBetween(memberId, startDate, endDate);
+        List<Todo> todos = todoRepository.findByMember_LoginIdAndTodoDateBetween(loginId, startDate, endDate);
 
         List<LocalDate> dates = todos.stream()
                 .map(Todo::getTodoDate)
