@@ -8,10 +8,9 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: true
     properties:
       hibernate:
-        format_sql: true
+        dialect: org.hibernate.dialect.MySQLDialect
 jwt:
   secret: your-secret-key-your-secret-key-your-secret-key-123456
   access-token-expiration: 3600000
