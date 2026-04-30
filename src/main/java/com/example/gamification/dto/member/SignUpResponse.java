@@ -8,6 +8,6 @@ import lombok.Getter;
 public class SignUpResponse {
     private Long memberId;
     private String loginId;
-    private String nickname;
+    private String petNickname;
     private String message;
 }
