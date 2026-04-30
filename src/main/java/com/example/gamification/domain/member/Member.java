@@ -1,17 +1,11 @@
 package com.example.gamification.domain.member;
 
-import com.example.gamification.domain.attendance.Attendance;
-import com.example.gamification.domain.course.UserCourse;
-import com.example.gamification.domain.pet.Pet;
-import com.example.gamification.domain.qr.QrLog;
-import com.example.gamification.domain.todo.Todo;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @Entity
@@ -33,8 +27,9 @@ public class Member {
     @Column(name = "last_attendance_date")
     private LocalDate lastAttendanceDate;
 
-    @Column(name = "nickname", nullable = false, length = 20)
-    private String nickname;
+    // 🔥 여기 핵심
+    @Column(name = "pet_nickname", nullable = false, length = 20)
+    private String petNickname;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
@@ -42,26 +37,11 @@ public class Member {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "member")
-    private List<Todo> todos;
-
-    @OneToOne(mappedBy = "member")
-    private Pet pet;
-
-    @OneToMany(mappedBy = "member")
-    private List<UserCourse> userCourses;
-
-    @OneToMany(mappedBy = "member")
-    private List<Attendance> attendances;
-
-    @OneToMany(mappedBy = "member")
-    private List<QrLog> qrLogs;
-
-    public static Member create(String loginId, String password, String nickname) {
+    public static Member create(String loginId, String password, String petNickname) {
         Member member = new Member();
         member.loginId = loginId;
         member.password = password;
-        member.nickname = nickname;
+        member.petNickname = petNickname;
         member.createdAt = LocalDateTime.now();
         member.updatedAt = LocalDateTime.now();
         return member;

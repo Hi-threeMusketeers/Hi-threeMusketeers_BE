@@ -29,7 +29,7 @@ public class MemberService {
         Member member = Member.create(
                 request.getLoginId(),
                 passwordEncoder.encode(request.getPassword()),
-                request.getNickname()
+                request.getPetNickname()
         );
 
         Member savedMember = memberRepository.save(member);
@@ -37,7 +37,7 @@ public class MemberService {
         return new SignUpResponse(
                 savedMember.getMemberId(),
                 savedMember.getLoginId(),
-                savedMember.getNickname(),
+                savedMember.getPetNickname(),
                 "회원가입이 완료되었습니다."
         );
     }
@@ -55,7 +55,7 @@ public class MemberService {
         return new LoginResponse(
                 member.getMemberId(),
                 member.getLoginId(),
-                member.getNickname(),
+                member.getPetNickname(),
                 "로그인 성공",
                 accessToken
         );
