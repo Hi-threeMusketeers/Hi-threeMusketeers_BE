@@ -1,5 +1,6 @@
 package com.example.gamification.controller.member;
 
+import com.example.gamification.dto.member.CheckLoginIdResponse;
 import com.example.gamification.dto.member.LoginRequest;
 import com.example.gamification.dto.member.LoginResponse;
 import com.example.gamification.dto.member.SignUpRequest;
@@ -8,9 +9,8 @@ import com.example.gamification.service.member.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.Authentication;
-
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,6 +18,11 @@ import org.springframework.security.core.Authentication;
 public class MemberController {
 
     private final MemberService memberService;
+
+    @GetMapping("/check-login-id")
+    public CheckLoginIdResponse checkLoginId(@RequestParam String loginId) {
+        return memberService.checkLoginId(loginId);
+    }
 
     @PostMapping("/signup")
     @ResponseStatus(HttpStatus.CREATED)
@@ -29,6 +34,7 @@ public class MemberController {
     public LoginResponse login(@Valid @RequestBody LoginRequest request) {
         return memberService.login(request);
     }
+
     @GetMapping("/me")
     public String me(Authentication authentication) {
         return "현재 로그인한 아이디: " + authentication.getName();

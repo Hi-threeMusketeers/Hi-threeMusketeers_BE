@@ -9,16 +9,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SignUpRequest {
 
-    @NotBlank
-    @Size(max = 20)
+    @NotBlank(message = "아이디는 필수입니다.")
+    @Size(max = 20, message = "아이디는 20자 이하여야 합니다.")
     private String loginId;
 
-    @NotBlank
-    @Size(max = 255)
+    @NotBlank(message = "비밀번호는 필수입니다.")
+    @Size(max = 255, message = "비밀번호는 255자 이하여야 합니다.")
     private String password;
 
-    // 🔥 변경됨
-    @NotBlank
-    @Size(max = 20)
+    @NotBlank(message = "펫 이름은 필수입니다.")
+    @Size(max = 10, message = "펫 이름은 10자 이하여야 합니다.")
     private String petNickname;
 }
