@@ -1,6 +1,7 @@
 package com.example.gamification.service.member;
 
 import com.example.gamification.domain.member.Member;
+import com.example.gamification.dto.member.CheckLoginIdResponse;
 import com.example.gamification.dto.member.LoginRequest;
 import com.example.gamification.dto.member.LoginResponse;
 import com.example.gamification.dto.member.SignUpRequest;
@@ -11,7 +12,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.example.gamification.repository.MemberRepository;
-
 @Service
 @RequiredArgsConstructor
 @Transactional
