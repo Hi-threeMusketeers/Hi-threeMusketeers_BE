@@ -1,10 +1,10 @@
 package com.example.gamification.service.course;
 
 import com.example.gamification.domain.course.Course;
-import com.example.gamification.domain.course.CourseRepository;
+import com.example.gamification.repository.CourseRepository;
 import com.example.gamification.domain.course.CourseSchedule;
 import com.example.gamification.domain.course.UserCourse;
-import com.example.gamification.domain.course.UserCourseRepository;
+import com.example.gamification.repository.UserCourseRepository;
 import com.example.gamification.domain.member.Member;
 import com.example.gamification.dto.course.CourseSearchResponse;
 import com.example.gamification.dto.course.SaveUserCoursesRequest;
