@@ -31,7 +31,6 @@ public class Member {
     @Column(name = "last_attendance_date")
     private LocalDate lastAttendanceDate;
 
-    // 🔥 여기 핵심
     @Column(name = "pet_nickname", nullable = false, length = 20)
     private String petNickname;
 
@@ -40,6 +39,21 @@ public class Member {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @OneToMany(mappedBy = "member")
+    private List<Todo> todos;
+
+    @OneToOne(mappedBy = "member")
+    private Pet pet;
+
+    @OneToMany(mappedBy = "member")
+    private List<UserCourse> userCourses;
+
+    @OneToMany(mappedBy = "member")
+    private List<Attendance> attendances;
+
+    @OneToMany(mappedBy = "member")
+    private List<QrLog> qrLogs;
 
     public static Member create(String loginId, String password, String petNickname) {
         Member member = new Member();

@@ -5,10 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class SignUpResponse {
-    private Long memberId;
-    private String loginId;
-    private String petNickname;
+public class CheckLoginIdResponse {
+    private boolean available;
     private String message;
-    private String accessToken;
 }

@@ -21,6 +21,16 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
 
+    public CheckLoginIdResponse checkLoginId(String loginId) {
+        boolean exists = memberRepository.existsByLoginId(loginId);
+
+        if (exists) {
+            return new CheckLoginIdResponse(false, "이미 존재하는 아이디입니다.");
+        }
+
+        return new CheckLoginIdResponse(true, "사용 가능한 아이디입니다.");
+    }
+
     public SignUpResponse signUp(SignUpRequest request) {
         if (memberRepository.existsByLoginId(request.getLoginId())) {
             throw new IllegalArgumentException("이미 존재하는 아이디입니다.");
@@ -34,11 +44,14 @@ public class MemberService {
 
         Member savedMember = memberRepository.save(member);
 
+        String accessToken = jwtTokenProvider.createToken(savedMember.getLoginId());
+
         return new SignUpResponse(
                 savedMember.getMemberId(),
                 savedMember.getLoginId(),
                 savedMember.getPetNickname(),
-                "회원가입이 완료되었습니다."
+                "회원가입이 완료되었습니다.",
+                accessToken
         );
     }
 
