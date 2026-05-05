@@ -48,4 +48,14 @@ public class Attendance {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "auth_id", nullable = false)
     private AttendanceAuth attendanceAuth;
+    public Attendance(Member member, CourseSchedule courseSchedule, AttendanceAuth attendanceAuth) {
+        this.member = member;
+        this.courseSchedule = courseSchedule;
+        this.attendanceAuth = attendanceAuth;
+
+        this.attendanceDatetime = LocalDateTime.now();
+        this.attendanceDate = LocalDate.now();
+        this.createdAt = LocalDateTime.now();
+    }
+
 }
