@@ -8,7 +8,7 @@ import lombok.Getter;
 public class LoginResponse {
     private Long memberId;
     private String loginId;
-    private String nickname;
+    private Long petId;
     private String message;
     private String accessToken;
 }

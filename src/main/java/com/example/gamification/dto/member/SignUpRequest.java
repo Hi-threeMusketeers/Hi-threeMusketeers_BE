@@ -19,5 +19,5 @@ public class SignUpRequest {
 
     @NotBlank(message = "펫 이름은 필수입니다.")
     @Size(max = 10, message = "펫 이름은 10자 이하여야 합니다.")
-    private String petNickname;
+    private String petName;
 }

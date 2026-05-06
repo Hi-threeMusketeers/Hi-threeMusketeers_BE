@@ -1,16 +1,7 @@
 package com.example.gamification.domain.pet;
 
 import com.example.gamification.domain.member.Member;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -49,4 +40,13 @@ public class Pet {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pet_type_id", nullable = false)
     private PetType petType;
+
+    // 🔥 생성자 수정
+    public Pet(String name, Member member, PetType petType) {
+        this.name = name;
+        this.member = member;
+        this.petType = petType;
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
 }
