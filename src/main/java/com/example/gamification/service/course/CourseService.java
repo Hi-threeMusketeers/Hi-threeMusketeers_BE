@@ -28,11 +28,14 @@ public class CourseService {
     private final UserCourseRepository userCourseRepository;
     private final MemberRepository memberRepository;
 
+    // 강의 검색
     public List<CourseSearchResponse> searchCourses(String keyword) {
+
         List<Course> courses = courseRepository.findByCourseNameContaining(keyword);
 
         return courses.stream()
                 .map(course -> {
+
                     List<CourseSchedule> schedules = course.getCourseSchedules().stream()
                             .sorted(Comparator.comparing(CourseSchedule::getDayOfWeek)
                                     .thenComparing(CourseSchedule::getStartTime))
@@ -59,8 +62,13 @@ public class CourseService {
                 .toList();
     }
 
+    // 시간표 저장
     @Transactional
-    public SaveUserCoursesResponse saveUserCourses(String loginId, SaveUserCoursesRequest request) {
+    public SaveUserCoursesResponse saveUserCourses(
+            String loginId,
+            SaveUserCoursesRequest request
+    ) {
+
         Member member = memberRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
 
@@ -73,18 +81,28 @@ public class CourseService {
         int savedCount = 0;
 
         for (Course course : courses) {
+
             boolean exists = userCourseRepository.existsByMemberAndCourse(member, course);
 
             if (!exists) {
+
                 UserCourse userCourse = UserCourse.create(member, course);
+
                 userCourseRepository.save(userCourse);
+
                 savedCount++;
             }
         }
 
-        return new SaveUserCoursesResponse(savedCount, "시간표 저장이 완료되었습니다.");
+        return new SaveUserCoursesResponse(
+                savedCount,
+                "시간표 저장이 완료되었습니다."
+        );
     }
+
+    // 내 시간표 조회
     public List<MyCourseResponse> getMyCourses(String loginId) {
+
         Member member = memberRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
 
@@ -94,6 +112,7 @@ public class CourseService {
                 .map(UserCourse::getCourse)
                 .distinct()
                 .map(course -> {
+
                     List<CourseSchedule> schedules = course.getCourseSchedules().stream()
                             .sorted(Comparator.comparing(CourseSchedule::getDayOfWeek)
                                     .thenComparing(CourseSchedule::getStartTime))
@@ -118,5 +137,18 @@ public class CourseService {
                     );
                 })
                 .toList();
+    }
+
+    // 🔥 시간표 삭제
+    @Transactional
+    public void deleteMyCourse(String loginId, Long courseId) {
+
+        Member member = memberRepository.findByLoginId(loginId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 과목입니다."));
+
+        userCourseRepository.deleteByMemberAndCourse(member, course);
     }
 }
