@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import com.example.gamification.dto.course.CurrentCourseResponse;
 
 import java.util.List;
 
@@ -64,5 +65,14 @@ public class CourseController {
         );
 
         return "시간표 삭제 완료";
+    }
+    @GetMapping("/current")
+    public CurrentCourseResponse getCurrentCourse(
+            Authentication authentication
+    ) {
+
+        return courseService.getCurrentCourse(
+                authentication.getName()
+        );
     }
 }

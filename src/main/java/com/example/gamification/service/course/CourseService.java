@@ -14,7 +14,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.example.gamification.dto.course.MyCourseResponse;
-
+import com.example.gamification.dto.course.CurrentCourseResponse;
+import java.time.DayOfWeek;
+import java.time.LocalTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -150,5 +152,59 @@ public class CourseService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 과목입니다."));
 
         userCourseRepository.deleteByMemberAndCourse(member, course);
+    }
+
+    public CurrentCourseResponse getCurrentCourse(String loginId) {
+
+        Member member = memberRepository.findByLoginId(loginId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+
+        List<UserCourse> userCourses = userCourseRepository.findByMember(member);
+
+        java.time.ZonedDateTime now =
+                java.time.ZonedDateTime.now(
+                        java.time.ZoneId.of("Asia/Seoul")
+                );
+
+        DayOfWeek nowDay = now.getDayOfWeek();
+        LocalTime nowTime = now.toLocalTime();
+
+        String today;
+
+        switch (nowDay) {
+            case MONDAY -> today = "월";
+            case TUESDAY -> today = "화";
+            case WEDNESDAY -> today = "수";
+            case THURSDAY -> today = "목";
+            case FRIDAY -> today = "금";
+            case SATURDAY -> today = "토";
+            case SUNDAY -> today = "일";
+            default -> {
+                return new CurrentCourseResponse("지금은 쉬는 시간이에요!");
+            }
+        }
+
+        for (UserCourse userCourse : userCourses) {
+
+            Course course = userCourse.getCourse();
+
+            for (CourseSchedule schedule : course.getCourseSchedules()) {
+
+                boolean isToday = schedule.getDayOfWeek().equals(today);
+
+                boolean isNow =
+                        !nowTime.isBefore(schedule.getStartTime()) &&
+                                !nowTime.isAfter(schedule.getEndTime());
+
+                if (isToday && isNow) {
+
+                    return new CurrentCourseResponse(
+                            "지금은 " + course.getCourseName() + " 시간이네요!"
+                    );
+                }
+            }
+        }
+
+        return new CurrentCourseResponse("지금은 쉬는 시간이에요!");
     }
 }
