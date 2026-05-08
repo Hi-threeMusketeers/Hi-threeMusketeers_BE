@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.example.gamification.dto.member.LogoutResponse;
+import com.example.gamification.jwt.TokenBlacklistService;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +25,7 @@ public class MemberService {
     private final PetTypeRepository petTypeRepository; // 🔥 추가
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
+    private final TokenBlacklistService tokenBlacklistService;
 
     public CheckLoginIdResponse checkLoginId(String loginId) {
         boolean exists = memberRepository.existsByLoginId(loginId);
@@ -80,5 +83,15 @@ public class MemberService {
                 "로그인 성공",
                 accessToken
         );
+    }
+    public LogoutResponse logout(String authorizationHeader) {
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            throw new IllegalArgumentException("토큰이 없습니다.");
+        }
+
+        String token = authorizationHeader.substring(7);
+        tokenBlacklistService.add(token);
+
+        return new LogoutResponse("로그아웃이 완료되었습니다.");
     }
 }
