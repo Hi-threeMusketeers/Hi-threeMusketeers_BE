@@ -1,16 +1,18 @@
 package com.example.gamification.domain.member;
 
+import com.example.gamification.domain.attendance.Attendance;
+import com.example.gamification.domain.course.UserCourse;
+import com.example.gamification.domain.pet.Pet;
+import com.example.gamification.domain.qr.QrLog;
+import com.example.gamification.domain.todo.Todo;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import java.util.List;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import com.example.gamification.domain.todo.Todo;
-import com.example.gamification.domain.pet.Pet;
-import com.example.gamification.domain.course.UserCourse;
-import com.example.gamification.domain.attendance.Attendance;
-import com.example.gamification.domain.qr.QrLog;
+import java.util.List;
+
 @Getter
 @Entity
 @Table(name = "member")
@@ -31,8 +33,9 @@ public class Member {
     @Column(name = "last_attendance_date")
     private LocalDate lastAttendanceDate;
 
-    @Column(name = "pet_nickname", nullable = false, length = 20)
-    private String petNickname;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "pet_id", nullable = false)
+    private Pet pet;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
@@ -43,9 +46,6 @@ public class Member {
     @OneToMany(mappedBy = "member")
     private List<Todo> todos;
 
-    @OneToOne(mappedBy = "member")
-    private Pet pet;
-
     @OneToMany(mappedBy = "member")
     private List<UserCourse> userCourses;
 
@@ -55,11 +55,11 @@ public class Member {
     @OneToMany(mappedBy = "member")
     private List<QrLog> qrLogs;
 
-    public static Member create(String loginId, String password, String petNickname) {
+    public static Member create(String loginId, String password, Pet pet) {
         Member member = new Member();
         member.loginId = loginId;
         member.password = password;
-        member.petNickname = petNickname;
+        member.pet = pet;
         member.createdAt = LocalDateTime.now();
         member.updatedAt = LocalDateTime.now();
         return member;

@@ -1,4 +1,7 @@
 package com.example.gamification.repository;
 
-public interface PetRepository {
+import com.example.gamification.domain.pet.Pet;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface PetRepository extends JpaRepository<Pet, Long> {
 }

@@ -2,11 +2,7 @@ package com.example.gamification.service;
 
 import com.example.gamification.domain.member.Member;
 import com.example.gamification.domain.todo.Todo;
-import com.example.gamification.dto.todo.CalendarDateResponse;
-import com.example.gamification.dto.todo.CalendarMonthResponse;
-import com.example.gamification.dto.todo.CalendarTodoResponse;
-import com.example.gamification.dto.todo.TodoCreateRequest;
-import com.example.gamification.dto.todo.TodoResponse;
+import com.example.gamification.dto.todo.*;
 import com.example.gamification.repository.MemberRepository;
 import com.example.gamification.repository.TodoRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -28,6 +24,7 @@ public class TodoService {
         this.memberRepository = memberRepository;
     }
 
+    // 투두 생성
     public TodoResponse createTodo(String loginId, TodoCreateRequest request) {
         Member member = memberRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new EntityNotFoundException("해당 회원이 존재하지 않습니다."));
@@ -39,45 +36,46 @@ public class TodoService {
                 request.getContent()
         );
 
-        Todo savedTodo = todoRepository.save(todo);
+        Todo saved = todoRepository.save(todo);
 
         return new TodoResponse(
-                savedTodo.getTodoId(),
-                savedTodo.getTodoDate(),
-                savedTodo.getTitle(),
-                savedTodo.getContent(),
-                savedTodo.getIsCompleted()
+                saved.getTodoId(),
+                saved.getTodoDate(),
+                saved.getTitle(),
+                saved.getContent(),
+                saved.getIsCompleted()
         );
     }
 
+    // 완료 토글
     public TodoResponse completeTodo(String loginId, Long todoId) {
         Todo todo = todoRepository.findByTodoIdAndMember_LoginId(todoId, loginId)
-                .orElseThrow(() -> new EntityNotFoundException("해당 투두가 존재하지 않거나 권한이 없습니다."));
+                .orElseThrow(() -> new EntityNotFoundException("해당 투두가 없거나 권한이 없습니다."));
 
         todo.toggleComplete();
 
-        Todo updatedTodo = todoRepository.save(todo);
-
         return new TodoResponse(
-                updatedTodo.getTodoId(),
-                updatedTodo.getTodoDate(),
-                updatedTodo.getTitle(),
-                updatedTodo.getContent(),
-                updatedTodo.getIsCompleted()
+                todo.getTodoId(),
+                todo.getTodoDate(),
+                todo.getTitle(),
+                todo.getContent(),
+                todo.getIsCompleted()
         );
     }
 
+    // 삭제
     public void deleteTodo(String loginId, Long todoId) {
         Todo todo = todoRepository.findByTodoIdAndMember_LoginId(todoId, loginId)
-                .orElseThrow(() -> new EntityNotFoundException("해당 투두가 존재하지 않거나 권한이 없습니다."));
+                .orElseThrow(() -> new EntityNotFoundException("해당 투두가 없거나 권한이 없습니다."));
 
         todoRepository.delete(todo);
     }
 
+    // 날짜 조회
     public CalendarDateResponse getTodosByDate(String loginId, LocalDate date) {
         List<Todo> todos = todoRepository.findByMember_LoginIdAndTodoDate(loginId, date);
 
-        List<CalendarTodoResponse> todoResponses = todos.stream()
+        List<CalendarTodoResponse> result = todos.stream()
                 .map(todo -> new CalendarTodoResponse(
                         todo.getTodoId(),
                         todo.getTitle(),
@@ -86,14 +84,16 @@ public class TodoService {
                 ))
                 .toList();
 
-        return new CalendarDateResponse(date, todoResponses);
+        return new CalendarDateResponse(date, result);
     }
 
+    // 월 조회
     public CalendarMonthResponse getMonthlyTodoStatus(String loginId, int year, int month) {
-        LocalDate startDate = LocalDate.of(year, month, 1);
-        LocalDate endDate = startDate.withDayOfMonth(startDate.lengthOfMonth());
+        LocalDate start = LocalDate.of(year, month, 1);
+        LocalDate end = start.withDayOfMonth(start.lengthOfMonth());
 
-        List<Todo> todos = todoRepository.findByMember_LoginIdAndTodoDateBetween(loginId, startDate, endDate);
+        List<Todo> todos = todoRepository
+                .findByMember_LoginIdAndTodoDateBetween(loginId, start, end);
 
         List<LocalDate> dates = todos.stream()
                 .map(Todo::getTodoDate)

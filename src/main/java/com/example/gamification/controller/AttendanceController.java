@@ -21,7 +21,7 @@ public class AttendanceController {
             Authentication authentication,
             @RequestBody AttendanceRequest request
     ) {
-        String email = authentication.getName();
-        return attendanceService.checkAttendance(email, request);
+        String loginId = authentication.getName();
+        return attendanceService.checkAttendance(loginId, request);
     }
 }

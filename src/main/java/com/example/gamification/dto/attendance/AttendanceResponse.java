@@ -11,18 +11,28 @@ public class AttendanceResponse {
     private LocalDate attendanceDate;
     private LocalDateTime attendanceDatetime;
 
+    private Integer gainedExp;
+    private Integer petLevel;
+    private Integer petExp;
+
     public AttendanceResponse(
             String status,
             String message,
             Long attendanceId,
             LocalDate attendanceDate,
-            LocalDateTime attendanceDatetime
+            LocalDateTime attendanceDatetime,
+            Integer gainedExp,
+            Integer petLevel,
+            Integer petExp
     ) {
         this.status = status;
         this.message = message;
         this.attendanceId = attendanceId;
         this.attendanceDate = attendanceDate;
         this.attendanceDatetime = attendanceDatetime;
+        this.gainedExp = gainedExp;
+        this.petLevel = petLevel;
+        this.petExp = petExp;
     }
 
     public String getStatus() {
@@ -43,5 +53,17 @@ public class AttendanceResponse {
 
     public LocalDateTime getAttendanceDatetime() {
         return attendanceDatetime;
+    }
+
+    public Integer getGainedExp() {
+        return gainedExp;
+    }
+
+    public Integer getPetLevel() {
+        return petLevel;
+    }
+
+    public Integer getPetExp() {
+        return petExp;
     }
 }

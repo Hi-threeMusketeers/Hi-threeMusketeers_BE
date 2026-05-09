@@ -23,12 +23,13 @@ public class TodoController {
     }
 
     @DeleteMapping("/{todoId}")
-    public String deleteTodo(@PathVariable Long todoId, Authentication authentication) {
+    public void deleteTodo(
+            Authentication authentication,
+            @PathVariable Long todoId
+    ) {
         String loginId = authentication.getName();
         todoService.deleteTodo(loginId, todoId);
-        return "투두가 삭제되었습니다.";
     }
-
     @PatchMapping("/{todoId}/toggle")
     public TodoResponse completeTodo(@PathVariable Long todoId, Authentication authentication) {
         String loginId = authentication.getName();

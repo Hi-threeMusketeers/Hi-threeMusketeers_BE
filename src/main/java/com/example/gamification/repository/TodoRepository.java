@@ -9,9 +9,13 @@ import java.util.Optional;
 
 public interface TodoRepository extends JpaRepository<Todo, Long> {
 
+    Optional<Todo> findByTodoIdAndMember_LoginId(Long todoId, String loginId);
+
     List<Todo> findByMember_LoginIdAndTodoDate(String loginId, LocalDate todoDate);
 
-    List<Todo> findByMember_LoginIdAndTodoDateBetween(String loginId, LocalDate startDate, LocalDate endDate);
-
-    Optional<Todo> findByTodoIdAndMember_LoginId(Long todoId, String loginId);
+    List<Todo> findByMember_LoginIdAndTodoDateBetween(
+            String loginId,
+            LocalDate startDate,
+            LocalDate endDate
+    );
 }

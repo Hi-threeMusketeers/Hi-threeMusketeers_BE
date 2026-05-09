@@ -1,4 +1,4 @@
-package com.example.gamification.repository.;
+package com.example.gamification.repository;
 
 import com.example.gamification.domain.course.Course;
 import org.springframework.data.jpa.repository.JpaRepository;

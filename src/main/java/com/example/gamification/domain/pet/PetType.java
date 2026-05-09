@@ -1,11 +1,6 @@
 package com.example.gamification.domain.pet;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -20,12 +15,12 @@ public class PetType {
     @Column(name = "pet_type_id")
     private Long petTypeId;
 
-    @Column(name = "type_name", nullable = false, unique = true, length = 20)
+    @Column(name = "type_name", nullable = false, length = 50)
     private String typeName;
 
-    @Column(name = "model_url", length = 255)
+    @Column(name = "model_url")
     private String modelUrl;
 
-    @Column(name = "thumbnail_url", length = 255)
+    @Column(name = "thumbnail_url")
     private String thumbnailUrl;
 }
