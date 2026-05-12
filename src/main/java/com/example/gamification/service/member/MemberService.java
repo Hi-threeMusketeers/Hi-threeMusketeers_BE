@@ -58,11 +58,15 @@ public class MemberService {
         );
         petRepository.save(pet);
 
+        String accessToken =
+                jwtTokenProvider.createToken(member.getLoginId());
+
         return new SignUpResponse(
                 member.getMemberId(),
                 member.getLoginId(),
                 pet.getPetId(),
-                "회원가입 완료"
+                "회원가입 완료",
+                accessToken
         );
     }
 

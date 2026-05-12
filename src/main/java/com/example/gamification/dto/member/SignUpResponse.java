@@ -10,4 +10,5 @@ public class SignUpResponse {
     private String loginId;
     private Long petId;
     private String message;
+    private String accessToken;
 }
