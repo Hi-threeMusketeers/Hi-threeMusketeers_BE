@@ -1,18 +1,16 @@
 package com.example.gamification.domain.member;
 
-import com.example.gamification.domain.attendance.Attendance;
-import com.example.gamification.domain.course.UserCourse;
-import com.example.gamification.domain.pet.Pet;
-import com.example.gamification.domain.qr.QrLog;
-import com.example.gamification.domain.todo.Todo;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
+import java.util.List;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
-
+import com.example.gamification.domain.todo.Todo;
+import com.example.gamification.domain.pet.Pet;
+import com.example.gamification.domain.course.UserCourse;
+import com.example.gamification.domain.attendance.Attendance;
+import com.example.gamification.domain.qr.QrLog;
 @Getter
 @Entity
 @Table(name = "member")
@@ -33,10 +31,6 @@ public class Member {
     @Column(name = "last_attendance_date")
     private LocalDate lastAttendanceDate;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "pet_id", nullable = false)
-    private Pet pet;
-
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
@@ -55,11 +49,10 @@ public class Member {
     @OneToMany(mappedBy = "member")
     private List<QrLog> qrLogs;
 
-    public static Member create(String loginId, String password, Pet pet) {
+    public static Member create(String loginId, String password) {
         Member member = new Member();
         member.loginId = loginId;
         member.password = password;
-        member.pet = pet;
         member.createdAt = LocalDateTime.now();
         member.updatedAt = LocalDateTime.now();
         return member;

@@ -2,9 +2,11 @@ package com.example.gamification.config;
 
 import com.example.gamification.jwt.JwtAuthenticationFilter;
 import com.example.gamification.jwt.JwtTokenProvider;
+import com.example.gamification.jwt.TokenBlacklistService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -19,32 +21,53 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtTokenProvider jwtTokenProvider;
+    private final TokenBlacklistService tokenBlacklistService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
+
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/api/members/signup",
-                                "/api/members/login",
-                                "/api/members/check-login-id",
-                                "/api/courses/search",
 
-                                // Swagger 허용
+                .authorizeHttpRequests(auth -> auth
+
+                        // Swagger 허용
+                        .requestMatchers(
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
                                 "/v3/api-docs/**"
                         ).permitAll()
+
+                        // 공개 API
+                        .requestMatchers(
+                                "/api/members/signup",
+                                "/api/members/login",
+                                "/api/members/check-login-id",
+                                "/api/courses/search"
+                        ).permitAll()
+
+                        // OPTIONS 허용
+                        .requestMatchers(HttpMethod.OPTIONS, "/**")
+                        .permitAll()
+
+                        // 나머지는 인증 필요
                         .anyRequest().authenticated()
                 )
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
-                        UsernamePasswordAuthenticationFilter.class)
+
+                .addFilterBefore(
+                        new JwtAuthenticationFilter(
+                                jwtTokenProvider,
+                                tokenBlacklistService
+                        ),
+                        UsernamePasswordAuthenticationFilter.class
+                )
+
                 .cors(Customizer.withDefaults());
 
         return http.build();

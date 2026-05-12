@@ -52,19 +52,16 @@ public class Pet {
         return pet;
     }
 
-    public void setMember(Member member) {
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "pet_type_id", nullable = false)
+    private PetType petType;
+
+    // 🔥 생성자 수정
+    public Pet(String name, Member member, PetType petType) {
+        this.name = name;
         this.member = member;
-        this.updatedAt = LocalDateTime.now();
-    }
-
-    public void addExp(int amount) {
-        this.exp += amount;
-
-        while (this.exp >= 1000) {
-            this.exp -= 1000;
-            this.level += 1;
-        }
-
+        this.petType = petType;
+        this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
 }

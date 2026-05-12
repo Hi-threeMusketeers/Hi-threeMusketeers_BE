@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import com.example.gamification.dto.member.LogoutResponse;
 
 @RestController
 @RequiredArgsConstructor
@@ -38,5 +39,10 @@ public class MemberController {
     @GetMapping("/me")
     public String me(Authentication authentication) {
         return "현재 로그인한 아이디: " + authentication.getName();
+    }
+
+    @PostMapping("/logout")
+    public LogoutResponse logout(@RequestHeader("Authorization") String authorizationHeader) {
+        return memberService.logout(authorizationHeader);
     }
 }

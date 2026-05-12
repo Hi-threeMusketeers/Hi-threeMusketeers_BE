@@ -5,10 +5,6 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class LoginResponse {
-    private Long memberId;
-    private String loginId;
-    private Long petId;
+public class LogoutResponse {
     private String message;
-    private String accessToken;
 }
