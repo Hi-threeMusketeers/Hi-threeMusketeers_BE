@@ -28,7 +28,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (token != null) {
 
-            // 🔥 로그아웃된 토큰인지 검사
+            // 로그아웃된 토큰인지 검사
             if (tokenBlacklistService.contains(token)) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.setContentType("application/json;charset=UTF-8");
@@ -36,7 +36,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 return;
             }
 
-            // 🔥 정상 토큰 검사
+            // 정상 토큰 검사
             if (jwtTokenProvider.validateToken(token)) {
                 var authentication = jwtTokenProvider.getAuthentication(token);
                 SecurityContextHolder.getContext().setAuthentication(authentication);

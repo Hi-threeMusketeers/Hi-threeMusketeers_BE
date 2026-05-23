@@ -24,7 +24,7 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final PetRepository petRepository;
-    private final PetTypeRepository petTypeRepository; // 🔥 추가
+    private final PetTypeRepository petTypeRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final TokenBlacklistService tokenBlacklistService;
@@ -41,18 +41,15 @@ public class MemberService {
 
     public SignUpResponse signUp(SignUpRequest request) {
 
-        // 1. Member 생성
         Member member = Member.create(
                 request.getLoginId(),
                 passwordEncoder.encode(request.getPassword())
         );
         memberRepository.save(member);
 
-        // 2. PetType 가져오기 (🔥 핵심)
         PetType petType = petTypeRepository.findById(1L)
                 .orElseThrow(() -> new IllegalArgumentException("펫 타입 없음"));
 
-        // 3. Pet 생성
         Pet pet = new Pet(
                 request.getPetName(),
                 member,

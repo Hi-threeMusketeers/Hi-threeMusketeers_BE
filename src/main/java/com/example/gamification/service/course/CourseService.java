@@ -141,7 +141,7 @@ public class CourseService {
                 .toList();
     }
 
-    // 🔥 시간표 삭제
+    // 시간표 삭제
     @Transactional
     public void deleteMyCourse(String loginId, Long courseId) {
 

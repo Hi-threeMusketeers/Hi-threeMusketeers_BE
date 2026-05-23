@@ -6,7 +6,6 @@ import com.example.gamification.jwt.TokenBlacklistService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -25,49 +24,29 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
-
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-
                 .authorizeHttpRequests(auth -> auth
-
-                        // Swagger 허용
-                        .requestMatchers(
-                                "/swagger-ui/**",
-                                "/swagger-ui.html",
-                                "/v3/api-docs/**"
-                        ).permitAll()
-
-                        // 공개 API
                         .requestMatchers(
                                 "/api/members/signup",
                                 "/api/members/login",
                                 "/api/members/check-login-id",
-                                "/api/courses/search"
+                                "/api/courses/search",
+
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/v3/api-docs/**"
                         ).permitAll()
-
-                        // OPTIONS 허용
-                        .requestMatchers(HttpMethod.OPTIONS, "/**")
-                        .permitAll()
-
-                        // 나머지는 인증 필요
                         .anyRequest().authenticated()
                 )
-
                 .addFilterBefore(
-                        new JwtAuthenticationFilter(
-                                jwtTokenProvider,
-                                tokenBlacklistService
-                        ),
-                        UsernamePasswordAuthenticationFilter.class
-                )
-
+                        new JwtAuthenticationFilter(jwtTokenProvider, tokenBlacklistService),
+                        UsernamePasswordAuthenticationFilter.class)
                 .cors(Customizer.withDefaults());
 
         return http.build();

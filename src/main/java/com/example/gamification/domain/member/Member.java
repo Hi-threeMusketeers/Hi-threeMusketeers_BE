@@ -1,16 +1,18 @@
 package com.example.gamification.domain.member;
 
+import com.example.gamification.domain.attendance.Attendance;
+import com.example.gamification.domain.course.UserCourse;
+import com.example.gamification.domain.pet.Pet;
+import com.example.gamification.domain.qr.QrLog;
+import com.example.gamification.domain.todo.Todo;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import java.util.List;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import com.example.gamification.domain.todo.Todo;
-import com.example.gamification.domain.pet.Pet;
-import com.example.gamification.domain.course.UserCourse;
-import com.example.gamification.domain.attendance.Attendance;
-import com.example.gamification.domain.qr.QrLog;
+import java.util.List;
+
 @Getter
 @Entity
 @Table(name = "member")
@@ -36,6 +38,9 @@ public class Member {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @OneToOne(mappedBy = "member", fetch = FetchType.LAZY)
+    private Pet pet;
 
     @OneToMany(mappedBy = "member")
     private List<Todo> todos;

@@ -52,7 +52,7 @@ public class CourseController {
         );
     }
 
-    // 🔥 시간표 삭제
+    //  시간표 삭제
     @DeleteMapping("/me/{courseId}")
     public String deleteMyCourse(
             Authentication authentication,
