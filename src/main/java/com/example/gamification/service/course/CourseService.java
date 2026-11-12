@@ -169,20 +169,7 @@ public class CourseService {
         DayOfWeek nowDay = now.getDayOfWeek();
         LocalTime nowTime = now.toLocalTime();
 
-        String today;
-
-        switch (nowDay) {
-            case MONDAY -> today = "월";
-            case TUESDAY -> today = "화";
-            case WEDNESDAY -> today = "수";
-            case THURSDAY -> today = "목";
-            case FRIDAY -> today = "금";
-            case SATURDAY -> today = "토";
-            case SUNDAY -> today = "일";
-            default -> {
-                return new CurrentCourseResponse("지금은 쉬는 시간이에요!");
-            }
-        }
+        String today = nowDay.name();
 
         for (UserCourse userCourse : userCourses) {
 
