@@ -27,6 +27,7 @@ public class SecurityConfig {
 
         http
                 .csrf(AbstractHttpConfigurer::disable)
+                .cors(cors -> cors.disable())
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
 
@@ -41,6 +42,7 @@ public class SecurityConfig {
                                 "/api/members/login",
                                 "/api/members/check-login-id",
                                 "/api/courses/search",
+                                "/error",
 
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
