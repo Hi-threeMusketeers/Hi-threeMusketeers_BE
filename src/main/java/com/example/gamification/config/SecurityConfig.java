@@ -24,15 +24,19 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
+
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
+
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
+                                "/",
                                 "/api/members/signup",
                                 "/api/members/login",
                                 "/api/members/check-login-id",
@@ -40,13 +44,21 @@ public class SecurityConfig {
 
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
+                                "/v3/api-docs",
                                 "/v3/api-docs/**"
                         ).permitAll()
+
                         .anyRequest().authenticated()
                 )
+
                 .addFilterBefore(
-                        new JwtAuthenticationFilter(jwtTokenProvider, tokenBlacklistService),
-                        UsernamePasswordAuthenticationFilter.class)
+                        new JwtAuthenticationFilter(
+                                jwtTokenProvider,
+                                tokenBlacklistService
+                        ),
+                        UsernamePasswordAuthenticationFilter.class
+                )
+
                 .cors(Customizer.withDefaults());
 
         return http.build();

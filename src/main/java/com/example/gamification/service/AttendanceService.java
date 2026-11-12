@@ -66,7 +66,7 @@ public class AttendanceService {
         if (alreadyAttended) {
             throw new IllegalStateException("이미 출석한 수업입니다.");
         }
-
+/* =========테스트용 GPS, 와이파이 해제
         double distance = calculateDistance(
                 request.getLatitude(),
                 request.getLongitude(),
@@ -81,7 +81,7 @@ public class AttendanceService {
         if (!auth.getWifiName().equalsIgnoreCase(request.getWifiName())) {
             throw new IllegalArgumentException("학교 와이파이가 아닙니다.");
         }
-
+*/
         Attendance attendance = new Attendance(member, courseSchedule, auth);
         Attendance saved = attendanceRepository.save(attendance);
 

@@ -36,32 +36,42 @@ public class CourseService {
         List<Course> courses = courseRepository.findByCourseNameContaining(keyword);
 
         return courses.stream()
-                .map(course -> {
-
-                    List<CourseSchedule> schedules = course.getCourseSchedules().stream()
-                            .sorted(Comparator.comparing(CourseSchedule::getDayOfWeek)
-                                    .thenComparing(CourseSchedule::getStartTime))
-                            .toList();
-
-                    String classroomText = schedules.stream()
-                            .map(CourseSchedule::getClassroom)
-                            .distinct()
-                            .collect(Collectors.joining(", "));
-
-                    String scheduleText = schedules.stream()
-                            .map(schedule -> schedule.getDayOfWeek() + " "
-                                    + schedule.getStartTime() + "-" + schedule.getEndTime())
-                            .collect(Collectors.joining(", "));
-
-                    return new CourseSearchResponse(
-                            course.getCourseId(),
-                            course.getCourseName(),
-                            course.getProfessorName(),
-                            classroomText,
-                            scheduleText
-                    );
-                })
+                .flatMap(course -> course.getCourseSchedules().stream()
+                        .sorted(Comparator.comparing(CourseSchedule::getDayOfWeek)
+                                .thenComparing(CourseSchedule::getStartTime))
+                        .map(schedule -> new CourseSearchResponse(
+                                course.getCourseId(),
+                                course.getCourseName(),
+                                course.getProfessorName(),
+                                schedule.getClassroom(),
+                                schedule.getDayOfWeek(),
+                                convertToPeriod(schedule.getStartTime()),
+                                convertToPeriod(schedule.getEndTime()),
+                                createScheduleText(schedule)
+                        ))
+                )
                 .toList();
+    }
+
+    // 시간 → 교시 변환
+// 09:00 → 1교시, 13:00 → 5교시, 14:00 → 6교시
+    private int convertToPeriod(LocalTime time) {
+        return time.getHour() - 8;
+    }
+
+    private String createScheduleText(CourseSchedule schedule) {
+
+        int start = convertToPeriod(schedule.getStartTime());
+        int end = convertToPeriod(schedule.getEndTime());
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(schedule.getDayOfWeek());
+
+        for (int i = start; i < end; i++) {
+            sb.append(i);
+        }
+
+        return sb.toString();
     }
 
     // 시간표 저장
@@ -113,31 +123,20 @@ public class CourseService {
         return userCourses.stream()
                 .map(UserCourse::getCourse)
                 .distinct()
-                .map(course -> {
-
-                    List<CourseSchedule> schedules = course.getCourseSchedules().stream()
-                            .sorted(Comparator.comparing(CourseSchedule::getDayOfWeek)
-                                    .thenComparing(CourseSchedule::getStartTime))
-                            .toList();
-
-                    String classroomText = schedules.stream()
-                            .map(CourseSchedule::getClassroom)
-                            .distinct()
-                            .collect(Collectors.joining(", "));
-
-                    String scheduleText = schedules.stream()
-                            .map(schedule -> schedule.getDayOfWeek() + " "
-                                    + schedule.getStartTime() + "-" + schedule.getEndTime())
-                            .collect(Collectors.joining(", "));
-
-                    return new MyCourseResponse(
-                            course.getCourseId(),
-                            course.getCourseName(),
-                            course.getProfessorName(),
-                            classroomText,
-                            scheduleText
-                    );
-                })
+                .flatMap(course -> course.getCourseSchedules().stream()
+                        .sorted(Comparator.comparing(CourseSchedule::getDayOfWeek)
+                                .thenComparing(CourseSchedule::getStartTime))
+                        .map(schedule -> new MyCourseResponse(
+                                course.getCourseId(),
+                                course.getCourseName(),
+                                course.getProfessorName(),
+                                schedule.getClassroom(),
+                                schedule.getDayOfWeek(),
+                                convertToPeriod(schedule.getStartTime()),
+                                convertToPeriod(schedule.getEndTime()),
+                                createScheduleText(schedule)
+                        ))
+                )
                 .toList();
     }
 

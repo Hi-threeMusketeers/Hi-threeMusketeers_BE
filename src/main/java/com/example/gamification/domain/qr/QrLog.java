@@ -1,3 +1,4 @@
+
 package com.example.gamification.domain.qr;
 
 import com.example.gamification.domain.member.Member;
@@ -10,15 +11,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Entity
-@Table(
-        name = "qr_log",
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "uk_qr_log_member_date",
-                        columnNames = {"member_id", "auth_date"}
-                )
-        }
-)
+@Table(name = "qr_log")
 @NoArgsConstructor
 public class QrLog {
 
@@ -43,4 +36,12 @@ public class QrLog {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "qr_id", nullable = false)
     private QrAuth qrAuth;
+
+    public QrLog(Member member, QrAuth qrAuth) {
+        this.member = member;
+        this.qrAuth = qrAuth;
+        this.authDate = LocalDate.now();
+        this.authDatetime = LocalDateTime.now();
+        this.createdAt = LocalDateTime.now();
+    }
 }

@@ -6,9 +6,15 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class MyCourseResponse {
+
     private Long courseId;
     private String courseName;
     private String professorName;
-    private String classroomText;
+
+    private String classroom;
+    private String dayOfWeek;
+    private Integer startPeriod;
+    private Integer endPeriod;
+
     private String scheduleText;
 }

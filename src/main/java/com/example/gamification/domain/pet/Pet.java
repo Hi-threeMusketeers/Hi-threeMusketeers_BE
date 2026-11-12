@@ -26,7 +26,7 @@ public class Pet {
     private PetType petType;
 
     @OneToOne
-    @JoinColumn(name = "member_id", nullable = false)
+    @JoinColumn(name = "member_id", nullable = false, unique = true)
     private Member member;
 
     @Column(name = "level", nullable = false)
@@ -67,6 +67,7 @@ public class Pet {
         this.updatedAt = LocalDateTime.now();
     }
 
+    // 경험치 증가 및 레벨업
     public void addExp(int amount) {
         this.exp += amount;
 
@@ -75,6 +76,13 @@ public class Pet {
             this.level += 1;
         }
 
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    // 테스트용 레벨 및 경험치 초기화
+    public void resetLevelAndExp() {
+        this.level = 1;
+        this.exp = 0;
         this.updatedAt = LocalDateTime.now();
     }
 }
