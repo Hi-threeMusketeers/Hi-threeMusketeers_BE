@@ -47,13 +47,10 @@ public class MemberService {
         );
         memberRepository.save(member);
 
-        PetType petType = petTypeRepository.findById(1L)
-                .orElseThrow(() -> new IllegalArgumentException("펫 타입 없음"));
-
         Pet pet = new Pet(
                 request.getPetName(),
                 member,
-                petType
+                null
         );
         petRepository.save(pet);
 

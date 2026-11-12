@@ -22,7 +22,7 @@ public class Pet {
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "pet_type_id", nullable = false)
+    @JoinColumn(name = "pet_type_id", nullable = true)
     private PetType petType;
 
     @OneToOne
